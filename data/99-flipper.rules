@@ -1,0 +1,5 @@
+# Flipper Zero USB CDC-ACM (STM32 VCP, VID 0483 / PID 5740).
+# Late-running, no uaccess tag (uaccess lets logind reset the node to 0660);
+# a plain MODE=0666 makes the serial node usable by the app without dialout
+# membership or a session re-login.
+SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE="0666", GROUP="dialout"

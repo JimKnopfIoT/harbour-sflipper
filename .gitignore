@@ -1,0 +1,24 @@
+# Build output
+RPMS/
+SRPMS/
+installroot/
+build/
+.mb2/
+*.o
+moc_*.cpp
+moc_predefs.h
+qrc_*.cpp
+*.qm
+Makefile
+.qmake.stash
+*.pro.user*
+documentation.list
+/harbour-sflipper
+
+# Editor / OS
+*.autosave
+*~
+.DS_Store
+
+# Local design scratch (not part of the app)
+icons/_previews/
