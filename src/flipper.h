@@ -81,6 +81,12 @@ public:
     Q_INVOKABLE void openFileInApp(const QString &appName, const QString &remotePath);
     Q_INVOKABLE void appStart(const QString &name, const QString &args);
 
+    // Write a saved USB device profile to the SD for the Mouse-Jiggler-smart
+    // .fap (/ext/apps_data/mouse_jiggler_smart/id.conf). If start is true, also
+    // launch the app — only sensible over BLE, since starting it over USB turns
+    // the Flipper into a HID device and drops our USB-RPC serial link.
+    Q_INVOKABLE void pushJigglerProfile(const QVariantMap &dev, bool start);
+
     Q_INVOKABLE void reboot(int mode);
 
     // Change the Flipper's name (display + BT). Empty name resets to default.
@@ -100,6 +106,10 @@ public:
     Q_INVOKABLE void uploadUpdatePackage(const QString &localDir);
     Q_INVOKABLE void cancelUpload();
 
+    // Install the bundled Mouse-Jiggler-smart .fap onto the SD
+    // (/ext/apps/USB/). Reuses the chunked uploader; USB-C only.
+    Q_INVOKABLE void installJigglerFap();
+
 signals:
     void connectedChanged();
     void statusTextChanged();
@@ -111,6 +121,7 @@ signals:
     void listDirEntry(const QString &name, bool isDir, int size);
     void listDirDone();
     void actionError(const QString &message);
+    void actionInfo(const QString &message);   // non-error, transient feedback
 
 private slots:
     void onTransportReady();
@@ -151,7 +162,12 @@ private:
     void finishUpload(bool ok, const QString &message);
     void setUploadStatus(const QString &s);
 
+    // Confirming the jiggler-profile write (id.conf) on its command_complete.
+    quint32 m_profileWriteCmdId = 0;
+    QString m_lastProfileName;
+
     bool m_uploadActive = false;
+    bool m_uploadIsFirmware = true;  // false => plain file copy (e.g. the fap)
     QString m_uploadStatus;
     QStringList m_uploadFiles;       // local file paths
     QString m_uploadRemoteDir;       // /ext/update/<name>

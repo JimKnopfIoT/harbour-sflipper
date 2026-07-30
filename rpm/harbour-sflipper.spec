@@ -4,7 +4,7 @@
 
 Name:       harbour-sflipper
 Summary:    Native Flipper Zero client for Sailfish OS
-Version:    0.1.0
+Version:    0.2.0
 Release:    1
 License:    GPL-3.0-or-later
 URL:        https://github.com/JimKnopfIoT/harbour-sflipper
@@ -28,6 +28,10 @@ file manager, triggering saved Sub-GHz / Infrared / NFC / RFID signals,
 renaming the device, and installing firmware updates — all without Android
 App Support.
 
+Also includes a USB-host device library that inspects USB peripherals attached
+to the phone (descriptors, HID report decode, VID/PID lookup) and a bundled
+"Mouse-Jiggler-smart" Flipper application it can install and configure.
+
 %prep
 %setup -q
 
@@ -47,6 +51,15 @@ App Support.
 %config %{_sysconfdir}/udev/rules.d/99-flipper.rules
 
 %changelog
+* Thu Jul 30 2026 harbour-sflipper contributors 0.2.0-1
+- USB-host device library: inspect attached USB peripherals (full descriptors,
+  HID report-descriptor decode, VID/PID and chip-vendor lookup), with a saved
+  device list.
+- Bundled "Mouse-Jiggler-smart" Flipper app: install it to the Flipper and push
+  a spoofed VID/PID + manufacturer/product profile for stealth jiggling.
+- Serial node auto-resolves across /dev/ttyACM* by VID/PID, and transport
+  errors now disconnect cleanly instead of appearing stuck-connected.
+
 * Wed Jul 29 2026 harbour-sflipper contributors 0.1.0-1
 - First public release: USB-C + BLE transport, device info/battery, screen
   mirror + remote control with touch gestures, storage file manager, saved

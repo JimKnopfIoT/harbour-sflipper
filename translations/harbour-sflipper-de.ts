@@ -210,6 +210,34 @@
         <source>Upload cancelled</source>
         <translation>Upload abgebrochen</translation>
     </message>
+    <message>
+        <source>Installing the jiggler app needs a USB-C connection.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bundled jiggler app not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Installing jiggler app…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sending profile: %1…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Profile sent: %1 — now open Mouse-Jiggler-smart on the Flipper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sending profile failed (storage error %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainPage</name>
@@ -269,6 +297,18 @@
         <source>Firmware update</source>
         <translation>Firmware-Update</translation>
     </message>
+    <message>
+        <source>USB tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB devices (Jiggler profiles)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swipe left to read &amp; save USB devices.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NameDialog</name>
@@ -301,6 +341,25 @@ Hinweis: Das Umbenennen ändert auch die Bluetooth-MAC — danach in Einstellung
     </message>
 </context>
 <context>
+    <name>RenameUsbDialog</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>e.g. Logitech-Laptop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tip: with two similar devices, name them e.g. …-Laptop and …-PC.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RpcSession</name>
     <message>
         <source>Failed to encode RPC request</source>
@@ -313,10 +372,6 @@ Hinweis: Das Umbenennen ändert auch die Bluetooth-MAC — danach in Einstellung
     <message>
         <source>RPC decode error</source>
         <translation>RPC-Dekodierfehler</translation>
-    </message>
-    <message>
-        <source>Flipper returned error status %1</source>
-        <translation>Flipper meldete Fehlerstatus %1</translation>
     </message>
 </context>
 <context>
@@ -336,6 +391,271 @@ Hinweis: Das Umbenennen ändert auch die Bluetooth-MAC — danach in Einstellung
     <message>
         <source>read failed: %1</source>
         <translation>Lesen fehlgeschlagen: %1</translation>
+    </message>
+</context>
+<context>
+    <name>UsbDeviceDetailPage</name>
+    <message>
+        <source>Send to Flipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Löschen</translation>
+    </message>
+    <message>
+        <source>Device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Name</translation>
+    </message>
+    <message>
+        <source>Manufacturer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Product</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vendor ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Product ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed (Mbit/s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interfaces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect to the Flipper to send this identity to the Mouse-Jiggler-smart app.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device class</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EP0 max packet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configurations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power</source>
+        <translation type="unfinished">Energie</translation>
+    </message>
+    <message>
+        <source>Bus / Device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sent to Flipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Green fields are written to the jiggler profile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device descriptor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interfaces &amp; endpoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HID report descriptor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host controller (phone)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>the device&apos;s report grammar (what it is + byte layout of its reports)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>raw: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vendor (usb.ids)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Product (usb.ids)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manufacturer string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chip vendor (likely)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chip vendor is inferred from the manufacturer string / VID — the exact silicon isn&apos;t exposed over USB.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UsbDevicesPage</name>
+    <message>
+        <source>Mice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboards</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other HID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mass storage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serial / CDC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Printers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cameras / imaging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Smart cards</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wireless</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hubs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read attached device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No devices saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plug a USB device (mouse, keyboard, …) into the phone, then pull down and read it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to Flipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Löschen</translation>
+    </message>
+    <message>
+        <source>Deleting</source>
+        <translation type="unfinished">Wird gelöscht</translation>
+    </message>
+    <message>
+        <source>Install jiggler app on Flipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UsbReadPage</name>
+    <message>
+        <source>Read attached device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Devices currently plugged into the phone. Tap one to name and save it to your library.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rescan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nothing attached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plug a USB device into the phone (an OTG adapter switches the port to host mode), then pull down to rescan.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>already saved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

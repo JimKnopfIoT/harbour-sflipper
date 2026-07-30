@@ -1,0 +1,12 @@
+App(
+    appid="mouse_jiggler_smart",
+    name="Mouse-Jiggler-smart",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="mouse_jiggler_smart_app",
+    stack_size=4 * 1024,
+    fap_category="USB",
+    fap_description="Stealth mouse jiggler that presents a saved USB device identity (VID/PID/strings) pushed from sFlipper.",
+    fap_author="anon",
+    fap_version="1.0",
+    fap_icon="icon_10px.png",
+)

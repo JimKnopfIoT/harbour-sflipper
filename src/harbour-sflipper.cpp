@@ -7,6 +7,7 @@
 #include <sailfishapp.h>
 
 #include "flipper.h"
+#include "usblibrary.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +21,10 @@ int main(int argc, char *argv[])
 
     Flipper flipper(screen);
     view->rootContext()->setContextProperty(QStringLiteral("flipper"), &flipper);
+
+    // USB device library (read attached HID devices, save/rename, push to Flipper).
+    UsbLibrary usbLib;
+    view->rootContext()->setContextProperty(QStringLiteral("usbLib"), &usbLib);
 
     view->setSource(SailfishApp::pathTo(QStringLiteral("qml/harbour-sflipper.qml")));
     view->show();

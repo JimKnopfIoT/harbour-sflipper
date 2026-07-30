@@ -13,3 +13,8 @@ Bundled / derived third-party work:
   by Flipper Devices, used to generate `lib/generated/`. See that directory's LICENSE.
 - Protocol details cross-checked against the open-source **qFlipper** (GPL-3.0) and
   the Flipper firmware; no source code was copied.
+
+The bundled Flipper application `data/apps/mouse_jiggler_smart.fap` is **first-party**
+code (GPL-3.0-or-later); its corresponding source is in
+`flipper-app/mouse_jiggler_smart/`. It builds against the Flipper firmware
+(fap API) and links no third-party code beyond that public API.

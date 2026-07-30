@@ -43,6 +43,7 @@ SOURCES += \
 # --- App sources -----------------------------------------------------------
 HEADERS += \
     src/flipper.h \
+    src/usblibrary.h \
     src/transport/transport.h \
     src/transport/serialtransport.h \
     src/transport/bletransport.h \
@@ -51,6 +52,7 @@ HEADERS += \
 SOURCES += \
     src/harbour-sflipper.cpp \
     src/flipper.cpp \
+    src/usblibrary.cpp \
     src/transport/serialtransport.cpp \
     src/transport/bletransport.cpp \
     src/rpc/rpcsession.cpp
@@ -66,6 +68,12 @@ udevrule.files = data/99-flipper.rules
 udevrule.path  = /etc/udev/rules.d
 INSTALLS += udevrule
 
+# Bundled Flipper app: the Mouse-Jiggler-smart .fap, installed to the SD by the
+# app on request (/ext/apps/USB/). Built separately from the firmware tree.
+jigglerfap.files = data/apps/mouse_jiggler_smart.fap
+jigglerfap.path  = /usr/share/harbour-sflipper/apps
+INSTALLS += jigglerfap
+
 # --- Translations ----------------------------------------------------------
 TRANSLATIONS += translations/harbour-sflipper-de.ts
 lupdate_only {
@@ -79,6 +87,10 @@ OTHER_FILES += \
     qml/pages/RemotePage.qml \
     qml/pages/FilesPage.qml \
     qml/pages/FlipperKey.qml \
+    qml/pages/UsbDevicesPage.qml \
+    qml/pages/UsbReadPage.qml \
+    qml/pages/UsbDeviceDetailPage.qml \
+    qml/pages/RenameUsbDialog.qml \
     qml/cover/CoverPage.qml \
     harbour-sflipper.desktop \
     rpm/harbour-sflipper.spec \

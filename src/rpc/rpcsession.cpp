@@ -2,6 +2,7 @@
 #include "../transport/transport.h"
 
 #include <QString>
+#include <QDebug>
 #include <string.h>
 
 #include <pb_encode.h>
@@ -295,9 +296,13 @@ void RpcSession::handleMain(const QByteArray &frame)
     const bool hasNext = main.has_next;
     const int status = int(main.command_status);
 
-    if (status != PB_CommandStatus_OK) {
-        emit protocolError(tr("Flipper returned error status %1").arg(status));
-    }
+    // NB: do NOT surface a non-OK command_status as a protocol error here.
+    // Command-level results are delivered to their specific handlers
+    // (commandComplete / updateResult), which decide what is fatal. Many
+    // non-OK statuses are benign — e.g. mkdir on an existing directory returns
+    // ERROR_STORAGE_EXIST (6) during an app/firmware upload. Just log it.
+    if (status != PB_CommandStatus_OK)
+        qWarning() << "RpcSession: command" << cmdId << "status" << status;
 
     switch (main.which_content) {
     case PB_Main_system_device_info_response_tag: {

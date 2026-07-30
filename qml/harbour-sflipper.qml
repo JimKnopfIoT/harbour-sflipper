@@ -22,5 +22,11 @@ ApplicationWindow {
             errorBanner.previewBody = message
             errorBanner.publish()
         }
+        onActionInfo: {
+            errorBanner.close()
+            errorBanner.previewSummary = "sFlipper"
+            errorBanner.previewBody = message
+            errorBanner.publish()
+        }
     }
 }

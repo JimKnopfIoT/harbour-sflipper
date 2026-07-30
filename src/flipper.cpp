@@ -82,11 +82,45 @@ void Flipper::setStatus(const QString &s)
 }
 
 // --- Connection ------------------------------------------------------------
+// Resolve the Flipper's CDC-ACM node. The kernel does not guarantee ttyACM0 —
+// after a re-plug or reboot the Flipper can come back as ttyACM1, ttyACM2, …
+// Prefer the node whose USB device is a Flipper (VID 0483 / PID 5740); fall
+// back to the first ttyACM present, then to the requested path.
+static QString resolveFlipperSerial(const QString &requested)
+{
+    QDir dev(QStringLiteral("/dev"));
+    const QStringList nodes =
+        dev.entryList(QStringList() << QStringLiteral("ttyACM*"), QDir::System, QDir::Name);
+    QString firstExisting;
+    for (const QString &n : nodes) {
+        const QString path = QStringLiteral("/dev/") + n;
+        if (firstExisting.isEmpty())
+            firstExisting = path;
+        // /sys/class/tty/ttyACMx/device -> the USB interface; its parent dir
+        // (one level up) carries idVendor / idProduct.
+        const QString link = QStringLiteral("/sys/class/tty/") + n + QStringLiteral("/device");
+        QDir sys(QFileInfo(link).canonicalFilePath());
+        sys.cdUp();
+        QFile vf(sys.absoluteFilePath(QStringLiteral("idVendor")));
+        QFile pf(sys.absoluteFilePath(QStringLiteral("idProduct")));
+        if (vf.open(QIODevice::ReadOnly) && pf.open(QIODevice::ReadOnly)) {
+            const QString vid = QString::fromUtf8(vf.readAll()).trimmed().toLower();
+            const QString pid = QString::fromUtf8(pf.readAll()).trimmed().toLower();
+            if (vid == QLatin1String("0483") && pid == QLatin1String("5740"))
+                return path;
+        }
+    }
+    if (!firstExisting.isEmpty())
+        return firstExisting;
+    return requested;
+}
+
 void Flipper::connectUsb(const QString &device)
 {
     teardownTransport();
-    setStatus(tr("Opening %1…").arg(device));
-    SerialTransport *t = new SerialTransport(device, this);
+    const QString port = resolveFlipperSerial(device);
+    setStatus(tr("Opening %1…").arg(port));
+    SerialTransport *t = new SerialTransport(port, this);
     m_transport = t;
     connect(t, &Transport::ready, this, &Flipper::onTransportReady);
     connect(t, &Transport::closed, this, &Flipper::onTransportClosed);
@@ -144,8 +178,18 @@ void Flipper::onTransportClosed()
 
 void Flipper::onTransportError(const QString &message)
 {
-    setStatus(message);
     emit actionError(message);
+    // An errored transport (dead serial fd after a re-enumeration, failed BLE
+    // link) is unusable. Drop it and mark disconnected so the UI offers a fresh
+    // connect (which re-resolves the ttyACM node) instead of writing into a
+    // dead handle.
+    if (m_uploadActive)
+        finishUpload(false, message);
+    teardownTransport();
+    setConnected(false);
+    m_screenStreaming = false;
+    emit screenStreamingChanged();
+    setStatus(message);
 }
 
 void Flipper::refreshInfo()
@@ -296,6 +340,38 @@ void Flipper::appStart(const QString &name, const QString &args)
         m_rpc.appStart(name, args);
 }
 
+void Flipper::pushJigglerProfile(const QVariantMap &dev, bool start)
+{
+    if (!m_connected) {
+        emit actionError(tr("Not connected"));
+        return;
+    }
+    const QString dir = QStringLiteral("/ext/apps_data/mouse_jiggler_smart");
+    m_rpc.storageMkdir(QStringLiteral("/ext/apps_data"));
+    m_rpc.storageMkdir(dir);
+
+    // Simple key=value config the fap parses (vid/pid as hex). Manufacturer and
+    // product are capped to the firmware's 31-char HID string limit.
+    QByteArray c;
+    c += "vid=" + dev.value(QStringLiteral("vendorId")).toString().toUtf8() + "\n";
+    c += "pid=" + dev.value(QStringLiteral("productId")).toString().toUtf8() + "\n";
+    c += "manuf=" + dev.value(QStringLiteral("manufacturer")).toString().left(31).toUtf8() + "\n";
+    c += "product=" + dev.value(QStringLiteral("product")).toString().left(31).toUtf8() + "\n";
+    c += "name=" + dev.value(QStringLiteral("name")).toString().toUtf8() + "\n";
+    m_lastProfileName = dev.value(QStringLiteral("name")).toString();
+    // Track this write so we can confirm (or report) it on command_complete.
+    m_profileWriteCmdId = m_rpc.storageWrite(dir + QStringLiteral("/id.conf"), c);
+
+    setStatus(tr("Sending profile: %1…").arg(m_lastProfileName));
+
+    if (start) {
+        QTimer::singleShot(700, this, [this]() {
+            if (m_connected)
+                m_rpc.appStart(QStringLiteral("/ext/apps/USB/mouse_jiggler_smart.fap"), QString());
+        });
+    }
+}
+
 void Flipper::reboot(int mode)
 {
     if (m_connected)
@@ -419,6 +495,7 @@ void Flipper::uploadUpdatePackage(const QString &localDir)
     if (m_uploadFiles.isEmpty()) { emit actionError(tr("Empty package")); return; }
 
     m_uploadRemoteDir = QStringLiteral("/ext/update/") + d.dirName();
+    m_uploadIsFirmware = true;
     m_uploadIndex = 0;
     m_uploadSent = 0;
     m_uploadActive = true;
@@ -430,14 +507,49 @@ void Flipper::uploadUpdatePackage(const QString &localDir)
     startNextUploadFile();
 }
 
+void Flipper::installJigglerFap()
+{
+    if (!m_connected) { emit actionError(tr("Not connected")); return; }
+    if (m_uploadActive) return;
+    if (transportName() != QLatin1String("USB-C")) {
+        emit actionError(tr("Installing the jiggler app needs a USB-C connection."));
+        return;
+    }
+    const QString local =
+        QStringLiteral("/usr/share/harbour-sflipper/apps/mouse_jiggler_smart.fap");
+    if (!QFileInfo::exists(local)) {
+        emit actionError(tr("Bundled jiggler app not found."));
+        return;
+    }
+
+    m_uploadFiles.clear();
+    m_uploadFiles.append(local);
+    m_uploadTotal = QFileInfo(local).size();
+    m_uploadRemoteDir = QStringLiteral("/ext/apps/USB");
+    m_uploadIsFirmware = false;
+    m_uploadIndex = 0;
+    m_uploadSent = 0;
+    m_uploadActive = true;
+    setUploadStatus(tr("Installing jiggler app…"));
+    emit uploadChanged();
+
+    m_rpc.storageMkdir(QStringLiteral("/ext/apps"));
+    m_rpc.storageMkdir(m_uploadRemoteDir);
+    startNextUploadFile();
+}
+
 void Flipper::startNextUploadFile()
 {
     if (m_uploadFile) { m_uploadFile->close(); delete m_uploadFile; m_uploadFile = nullptr; }
 
     if (m_uploadIndex >= m_uploadFiles.size()) {
-        setUploadStatus(tr("Installing…"));
-        emit uploadChanged();
-        m_rpc.systemUpdate(m_uploadRemoteDir + QStringLiteral("/update.fuf"));
+        if (m_uploadIsFirmware) {
+            setUploadStatus(tr("Installing…"));
+            emit uploadChanged();
+            m_rpc.systemUpdate(m_uploadRemoteDir + QStringLiteral("/update.fuf"));
+        } else {
+            finishUpload(true, tr("Done"));
+        }
         return;
     }
 
@@ -476,6 +588,17 @@ void Flipper::onUploadTick()
 
 void Flipper::onCommandComplete(quint32 cmdId, int status)
 {
+    // Confirm (or report) the jiggler-profile write.
+    if (m_profileWriteCmdId && cmdId == m_profileWriteCmdId) {
+        m_profileWriteCmdId = 0;
+        if (status == 0)
+            emit actionInfo(tr("Profile sent: %1 — now open Mouse-Jiggler-smart "
+                               "on the Flipper.").arg(m_lastProfileName));
+        else
+            emit actionError(tr("Sending profile failed (storage error %1)").arg(status));
+        return;
+    }
+
     if (!m_uploadActive || cmdId != m_uploadCmdId)
         return;   // e.g. mkdir / other acks — ignore
     if (status != 0) {

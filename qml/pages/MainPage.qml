@@ -8,6 +8,18 @@ Page {
     // Flipper brand accent, used sparingly over the native Silica look.
     readonly property color flipperOrange: "#FF8200"
 
+    // Attach the USB tools page so a left swipe reaches it, even without a
+    // Flipper connected (reading USB devices is phone-only). Must be done once
+    // this page is actually the active top of the stack — doing it in
+    // Component.onCompleted (before it is on the stack) silently no-ops.
+    property bool _usbAttached: false
+    onStatusChanged: {
+        if (status === PageStatus.Active && !_usbAttached) {
+            _usbAttached = true
+            pageStack.pushAttached(Qt.resolvedUrl("UsbDevicesPage.qml"))
+        }
+    }
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: column.height
@@ -131,6 +143,33 @@ Page {
                         text: qsTr("Firmware update")
                         color: parent.highlighted ? Theme.highlightColor : Theme.primaryColor
                     }
+                }
+            }
+
+            // --- Always available (works without a Flipper connected) ------
+            Column {
+                width: parent.width
+                spacing: Theme.paddingSmall
+
+                SectionHeader { text: qsTr("USB tools") }
+
+                BackgroundItem {
+                    id: usbItem
+                    width: parent.width
+                    onClicked: pageStack.navigateForward()
+                    Label {
+                        x: Theme.horizontalPageMargin
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: qsTr("USB devices (Jiggler profiles)")
+                        color: usbItem.highlighted ? Theme.highlightColor : Theme.primaryColor
+                    }
+                }
+                Label {
+                    x: Theme.horizontalPageMargin
+                    width: parent.width - 2 * Theme.horizontalPageMargin
+                    font.pixelSize: Theme.fontSizeExtraSmall
+                    color: Theme.secondaryColor
+                    text: qsTr("Swipe left to read & save USB devices.")
                 }
             }
 

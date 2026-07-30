@@ -20,6 +20,14 @@ and **Bluetooth LE** (BlueZ GATT) — no Android App Support required.
 * **Rename** — change the Flipper's display + Bluetooth name.
 * **Firmware update** — install a package already on the SD, or upload an update
   package from the phone and install it (USB-C).
+* **USB device library** — with the phone in USB host mode (OTG), inspect
+  attached USB peripherals: full descriptors, decoded HID report descriptors,
+  and VID/PID + chip-vendor lookup (`usb.ids`), saved to an editable list.
+* **Mouse-Jiggler-smart** — a small bundled Flipper app the client can install
+  to the SD and configure with a spoofed VID/PID + manufacturer/product string,
+  for a stealthy mouse jiggle. (The Flipper is USB device-only, so the peripheral
+  read-out above runs on the phone, not the Flipper.) Its source and build
+  instructions live in [`flipper-app/mouse_jiggler_smart/`](flipper-app/mouse_jiggler_smart/).
 
 ## Requirements
 
