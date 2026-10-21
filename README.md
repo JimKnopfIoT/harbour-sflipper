@@ -66,6 +66,8 @@ and pre-generated (`lib/`), so no extra tooling is needed to build.
 * The app runs **unsandboxed** (no Sailjail profile) so it can reach
   `/dev/ttyACM0` and the `org.bluez` system bus.
 
+AI assisted development
+
 ## Attribution & licence
 
 * App icon: dolphin line-art from
