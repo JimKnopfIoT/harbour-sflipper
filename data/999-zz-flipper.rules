@@ -1,0 +1,15 @@
+# Flipper Zero USB CDC-ACM (STM32 VCP, VID 0483 / PID 5740).
+#
+# The file name has to sort AFTER 999-android-system.rules. Hybris adaptations
+# generate that file from the vendor's ueventd.rc, and some of them claim the
+# node outright: the Jolla Phone 2026 (MT6858) carries
+#
+#     KERNEL=="ttyACM0", MODE="0660", GROUP="radio", OWNER="radio"
+#
+# there, from an "MTK In-House TEE" entry. A 99-* rule is read first and then
+# overridden, which leaves the Flipper unreachable for the app.
+#
+# No uaccess tag (uaccess lets logind reset the node to 0660); a plain
+# MODE=0666 makes the serial node usable without dialout membership or a
+# session re-login.
+SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE="0666", GROUP="dialout"

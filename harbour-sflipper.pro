@@ -64,7 +64,10 @@ SOURCES += \
 # udev rule: make the Flipper's USB serial node accessible without dialout.
 # NB: must be /etc/udev/rules.d — on SailfishOS /lib is not a symlink to
 # /usr/lib, and udev does not read /usr/lib/udev/rules.d there.
-udevrule.files = data/99-flipper.rules
+# NB: the 999-zz- prefix is deliberate. It has to sort after the adaptation's
+# 999-android-system.rules, which on some devices claims ttyACM0 for the
+# radio group. See the comment in the rule itself.
+udevrule.files = data/999-zz-flipper.rules
 udevrule.path  = /etc/udev/rules.d
 INSTALLS += udevrule
 

@@ -4,7 +4,7 @@
 
 Name:       harbour-sflipper
 Summary:    Native Flipper Zero client for Sailfish OS
-Version:    0.2.0
+Version:    0.2.1
 Release:    1
 License:    GPL-3.0-or-later
 URL:        https://github.com/JimKnopfIoT/harbour-sflipper
@@ -48,9 +48,14 @@ to the phone (descriptors, HID report decode, VID/PID lookup) and a bundled
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
-%config %{_sysconfdir}/udev/rules.d/99-flipper.rules
+%config %{_sysconfdir}/udev/rules.d/999-zz-flipper.rules
 
 %changelog
+* Wed Sep 23 2026 harbour-sflipper contributors 0.2.1-1
+- Fix the USB serial node staying unreachable on adaptations whose generated
+  999-android-system.rules claims ttyACM0 for the radio group (seen on the
+  Jolla Phone 2026 / MT6858). The packaged udev rule is now named
+  999-zz-flipper.rules so it is applied last.
 * Thu Jul 30 2026 harbour-sflipper contributors 0.2.0-1
 - USB-host device library: inspect attached USB peripherals (full descriptors,
   HID report-descriptor decode, VID/PID and chip-vendor lookup), with a saved

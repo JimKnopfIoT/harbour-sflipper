@@ -59,6 +59,14 @@ and pre-generated (`lib/`), so no extra tooling is needed to build.
 
 ## Notes & caveats
 
+* **USB serial permissions.** The package ships
+  `/etc/udev/rules.d/999-zz-flipper.rules`, which opens the Flipper's CDC-ACM
+  node by VID/PID. The `999-zz-` prefix matters: a hybris adaptation generates
+  `999-android-system.rules` from the vendor's `ueventd.rc`, and some of those
+  claim `ttyACM0` for the `radio` group — the Jolla Phone 2026 does. A rule
+  named `99-…` is read first and silently overridden, and the app then fails to
+  open the port. `udevadm test /sys/class/tty/ttyACM0` shows which rule wins.
+
 * **Firmware upload is USB-C only** — BLE has no flow control for a ~14 MB
   transfer; the file manager's smaller writes work on either transport.
 * **Renaming changes the BLE MAC** on Unleashed (it is derived from the name),
